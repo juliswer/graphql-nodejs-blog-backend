@@ -4,7 +4,7 @@ const {createJWTToken} = require('../util/auth')
 
 const register = {
     type: GraphQLString,
-    description: 'Register a new user',
+    description: 'Register a new user and return a JWT token',
     args: {
         username: {type: GraphQLString},
         email: {type: GraphQLString},
@@ -24,10 +24,21 @@ const register = {
         await user.save();
 
         const token = createJWTToken({_id: user._id, username: user.username, email: user.email, displayName: user.displayName})
-        console.log(token)
-        
-        return 'new user created'
+        return token;
     }
 }
 
-module.exports = {register}
+const login = {
+    type: GraphQLString,
+    args: {
+        email: {type: GraphQLString},
+        password: {type: GraphQLString}
+    },
+    async resolve(_, args) {
+        const user = await User.findOne({email: args.email})
+        if (!user || args.password !== user.password) throw new Error('user not found');
+        return 'login'
+    }
+}
+
+module.exports = {register, login}
