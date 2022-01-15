@@ -35,9 +35,10 @@ const login = {
         password: {type: GraphQLString}
     },
     async resolve(_, args) {
-        const user = await User.findOne({email: args.email})
-        if (!user || args.password !== user.password) throw new Error('user not found');
-        return 'login'
+        const user = await User.findOne({email: args.email}).select('+password')
+        if (!user || args.password !== user.password) throw new Error('Invalid Credentials');
+        const token = createJWTToken({_id: user._id, username: user.username, email: user.email, displayName: user.displayName})
+        return token;
     }
 }
 
