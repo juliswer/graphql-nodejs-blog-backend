@@ -59,8 +59,6 @@ const createPost = {
             authorId: verifiedUser._id
         })
 
-        console.log(post) 
-
         return post
     }
 }
