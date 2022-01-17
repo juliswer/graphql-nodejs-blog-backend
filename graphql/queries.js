@@ -4,12 +4,8 @@ const { User } = require('../models');
 
 const users = {
     type: new GraphQLList(UserType),
-    async resolve() {
-        const users = await User.find()
-
-        console.log(users)
-
-        return users
+    resolve() {
+        return User.find()
     }
 }
 
