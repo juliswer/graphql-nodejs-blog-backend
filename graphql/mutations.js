@@ -52,7 +52,6 @@ const createPost = {
         body: {type: GraphQLString}
     },
     async resolve(_, args, {verifiedUser}) {
-        console.log(verifiedUser)
         const post = new Post({
             title: args.title,
             body: args.body,
@@ -65,4 +64,20 @@ const createPost = {
     }
 }
 
-module.exports = {register, login, createPost}
+const updatePost = {
+    type: PostType,
+    description: 'Update a post',
+    args: {
+        id: {type: GraphQLString},
+        title: {type: GraphQLString},
+        body: {type: GraphQLString}
+    },
+    async resolve(_, {id, title, body}, {verifiedUser}) {
+        console.log(verifiedUser)
+        console.log(id, title, body)
+
+        return {}
+    }
+}
+
+module.exports = {register, login, createPost, updatePost}
