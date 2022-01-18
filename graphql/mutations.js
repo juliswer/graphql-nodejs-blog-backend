@@ -59,6 +59,8 @@ const createPost = {
             authorId: verifiedUser._id
         })
 
+        await post.save()
+
         return post
     }
 }
