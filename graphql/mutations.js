@@ -73,10 +73,15 @@ const updatePost = {
         body: {type: GraphQLString}
     },
     async resolve(_, {id, title, body}, {verifiedUser}) {
-        console.log(verifiedUser)
-        console.log(id, title, body)
+        if(!verifiedUser) throw new Error("Unauthorized")
 
-        return {}
+        const updatedPost = await Post.findOneAndUpdate(
+            {_id: id, authorId: verifiedUser._id}, 
+            {title, body}, 
+            {new: true, runValidators: true}
+        )
+
+        return updatedPost;
     }
 }
 
