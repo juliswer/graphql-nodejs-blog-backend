@@ -86,7 +86,7 @@ const updatePost = {
 }
 
 const deletePost = {
-    type: PostType,
+    type: GraphQLString,
     description: 'Delete a post',
     args: {
         id: {type: GraphQLString}
@@ -96,7 +96,9 @@ const deletePost = {
 
         const deletedPost = await Post.findOneAndDelete({_id: id, authorId: verifiedUser._id})
 
-        return deletedPost;
+        if(!deletedPost) throw new Error("Post not found");
+
+        return "Post deleted successfully";
     }
 }
 
