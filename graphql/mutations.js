@@ -85,4 +85,19 @@ const updatePost = {
     }
 }
 
-module.exports = {register, login, createPost, updatePost}
+const deletePost = {
+    type: PostType,
+    description: 'Delete a post',
+    args: {
+        id: {type: GraphQLString}
+    },
+    async resolve(_, {id}, {verifiedUser}) {
+        if(!verifiedUser) throw new Error("Unauthorized")
+
+        const deletedPost = await Post.findOneAndDelete({_id: id, authorId: verifiedUser._id})
+
+        return deletedPost;
+    }
+}
+
+module.exports = {register, login, createPost, updatePost, deletePost}
