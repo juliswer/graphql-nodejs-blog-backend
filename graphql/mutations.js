@@ -126,4 +126,16 @@ const addComment = {
     }
 }
 
-module.exports = {register, login, createPost, updatePost, deletePost, addComment}
+const updateComment = {
+    type: CommentType,
+    description: 'Update a comment',
+    args: {
+        id: {type: GraphQLString},
+        comment: {type: GraphQLString}
+    },
+    resolve(_, {id, comment}) {
+        return Comment.findOneAndUpdate({_id: id}, {comment}, {new: true, runValidators: true})
+    }
+}
+
+module.exports = {register, login, createPost, updatePost, deletePost, addComment, updateComment}
