@@ -133,9 +133,23 @@ const updateComment = {
         id: {type: GraphQLString},
         comment: {type: GraphQLString}
     },
-    resolve(_, {id, comment}) {
+    resolve(_, {id, comment}, {verifiedUser}) {
+        if(!verifiedUser) throw new Error("Unauthorized")
         return Comment.findOneAndUpdate({_id: id}, {comment}, {new: true, runValidators: true})
     }
 }
 
-module.exports = {register, login, createPost, updatePost, deletePost, addComment, updateComment}
+const deleteComment = {
+    type: GraphQLString,
+    description: 'Delete a comment',
+    args: {
+        id: {type: GraphQLString}
+    },
+    async resolve(_, {id}, {verifiedUser}) {
+        if(!verifiedUser) throw new Error("Unauthorized")
+        await Comment.findOneAndDelete({_id: id})
+        return 'Comment deleted successfully'
+    }
+}
+
+module.exports = {register, login, createPost, updatePost, deletePost, addComment, updateComment, deleteComment}
