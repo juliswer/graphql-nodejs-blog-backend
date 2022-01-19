@@ -1,7 +1,7 @@
 const {GraphQLString} = require('graphql')
-const {User, Post} = require('../models')
+const {User, Post, Comment} = require('../models')
 const {createJWTToken} = require('../util/auth')
-const {PostType} = require('./types')
+const {PostType, CommentType} = require('./types')
 
 const register = {
     type: GraphQLString,
@@ -102,4 +102,28 @@ const deletePost = {
     }
 }
 
-module.exports = {register, login, createPost, updatePost, deletePost}
+const addComment = {
+    type: CommentType,
+    description: 'Add a comment to a post',
+    args: {
+        comment: {type: GraphQLString},
+        postId: {type: GraphQLString}
+    },
+    async resolve(_, {comment, postId}, {verifiedUser}) {
+        if(!verifiedUser) throw new Error("Unauthorized")
+
+        const newComment = new Comment({
+            comment,
+            postId,
+            userId: verifiedUser._id
+        })
+
+        if(!newComment) throw new Error("Something went wrong");
+
+        await newComment.save()
+
+        return newComment;
+    }
+}
+
+module.exports = {register, login, createPost, updatePost, deletePost, addComment}
