@@ -147,7 +147,8 @@ const deleteComment = {
     },
     async resolve(_, {id}, {verifiedUser}) {
         if(!verifiedUser) throw new Error("Unauthorized")
-        await Comment.findOneAndDelete({_id: id})
+        const commentDelete = await Comment.findOneAndDelete({_id: id, userId: verifiedUser._id})
+        if(!commentDelete) throw new Error("Comment not found");
         return 'Comment deleted successfully'
     }
 }
